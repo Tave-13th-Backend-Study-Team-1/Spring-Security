@@ -3,7 +3,7 @@
 ### JdbcUserDetailsManager를 이용한 인증 준비단계
 
 1. pom.xml에 아래의 3개 의존성 추가
-```aidl
+```java
 <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
@@ -21,7 +21,7 @@
 
 2. application.properties
 
-```aidl
+```java
 spring.datasource.url=jdbc:mysql://springsecurity.cjdg8jrihfh3.us-east-2.rds.amazonaws.com/eazybank
 spring.datasource.username=admin
 spring.datasource.password=MySQLSpringSecurity
@@ -42,7 +42,7 @@ spring.jpa.properties.hibernate.format_sql=true # 이해할 수 있도록 sql �
 - Entity 클래스를 생성해주어 JPA를 활용해 데이터베이스에 접근할 수 있도록 해야한다.
 - Repository=데이터베이스 상호작용 관련 로직을 전문적으로 다루는 클래스
 
-```aidl
+```java
 @Repository
 public interface CustomerRepository extends CrudRepository<Customer,Long> {
 
@@ -53,7 +53,7 @@ public interface CustomerRepository extends CrudRepository<Customer,Long> {
 추상 메소드를 기반으로 데이터베이스 내부에 실행될 쿼리가 결정된다.
 
 #### 맞춤형 UserDetailsService 구현
-```aidl
+```java
 @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String userName, password;
@@ -158,7 +158,7 @@ ___
 
 ### BCryptPasswordEncoder
 
-```aidl
+```java
 @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -169,7 +169,7 @@ ___
 
 #### 유저 등록 절차
 
-```aidl
+```java
 @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
         Customer savedCustomer = null;
@@ -213,7 +213,7 @@ ___
     - 대표적인 형식, 유저 이름 + 비밀번호
 
 ### AuthenticationProvider 커스터마이징
-```aidl
+```java
 @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
