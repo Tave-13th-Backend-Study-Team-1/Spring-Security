@@ -256,3 +256,17 @@ ___
     1. 인증 객체 반환=성공 여부 반환
 
   `return new UsernamePasswordAuthenticationToken(username, pwd, authorities);`
+---
+### 퀴즈
+1. **해싱에 대한 설명을 올바른 것을 고르시오.**
+   1. 암호화 및 인코딩에 비해 취약한 기술이다.
+   2. 해시된 데이터를 해싱 함수를 사용해 복구할 수 없다.
+   3. 해싱은 애플리케이션 내에서 비밀번호 관리에 적합한 기술이 아니다.
+2. **유저가 입력한 비밀번호와 DB에 저장된 비밀번호의 일치 여부를 판단하는 PasswordEncoder의 메소드 이름은?**
+3. **PasswordEncoder 구현 클래스 중 가장 권장되는 것?**
+   1. SCryptPasswordEncoder
+   2. Argon2PasswordEncoder
+   3. StandardPasswordEncoder
+   4. BCryptPasswordEncoder
+4. **AuthenticationProvider 클래스에 포함되는 메소드의 이름과 간단한 기능을 말하시오.**
+5. **AuthenticationProvider.authenticate() 메소드에 의해 요청이 처리된 후 인증된 유저를 나타내는 인터페이스는?**
