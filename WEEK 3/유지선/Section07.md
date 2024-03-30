@@ -56,70 +56,59 @@ private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VE
   - `setter` 메소드가 존재하지 않음
     - 엔드 유저에게 권한이 배정된다면 정보를 변경할 수 없음
 
-### 설정된 권한이 적용되는 곳
+### 설정된 권한을 확인하는 방법
 
-- `getAuthorities()`
-  - `UserDetails`에서의 데이터베이스에서 권한을 로딩하는 함수
-  - `AuthenticationProvider`에서의 `UsernamePasswordAuthenticationToken`의 함수
+- `AuthenticationProvider`에서의 `UsernamePasswordAuthenticationToken`의 함수
 
-```Java
-// EazyBankAuthenticationProvider
-@Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String username = authentication.getName();
-        String pwd = authentication.getCredentials().toString();
+  ```Java
+  // EazyBankAuthenticationProvider
+  @Override
+      public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+          String username = authentication.getName();
+          String pwd = authentication.getCredentials().toString();
 
-        List<Customer> customer = customerRepository.findByEmail(username);
-        if (customer.size()>0){
-            if (passwordEncoder.matches(pwd, customer.get(0).getPwd())){
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
-                return new UsernamePasswordAuthenticationToken(username, pwd, authorities);
-            }
-            // 생략
-        }
-    }
-```
+          List<Customer> customer = customerRepository.findByEmail(username);
+          if (customer.size()>0){
+              if (passwordEncoder.matches(pwd, customer.get(0).getPwd())){
+                  List<GrantedAuthority> authorities = new ArrayList<>();
+                  authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
+                  return new UsernamePasswordAuthenticationToken(username, pwd, authorities);
+              }
+              // 생략
+          }
+      }
+  ```
 
-- `UsernamePasswordAuthenticationToken`의 형식으로 인증 객체를 만들 때 권한 정보를 `SimpleGrantedAuthority` 객체를 만들어 넣음 \
-  -> 모든 권한을 수정되지 않는 리스트로 저장
+  - `UsernamePasswordAuthenticationToken`의 형식으로 인증 객체를 만들 때 권한 정보를 `SimpleGrantedAuthority` 객체를 만들어 넣음 \
+    -> 모든 권한을 수정되지 않는 리스트로 저장
 
-```Java
-// EazyBankUserDetails
-@Override
-public UserDetails loadByUsername(String username) throws UsernameNotFoundException {
-    // 생략
-    List<GrantedAuthority> authorities =  null;
-    if (customer.size() == 0){
-        // 생략
-    } else {
-        authorities = new ArrayList<>();
-        authorities.add(new SingleGrantedAuthrority(customer.get(0).getRole()));
-    }
-    return new User(username, password, authorities);
-}
-```
+- `UserDetails`에서의 데이터베이스에서 권한을 로딩
 
-- User 객체를 생성할 때 권한 정보를 `SimpleGrantedAuthority` 객체를 만들어 넣음
+  ```Java
+  // EazyBankUserDetails
+  @Override
+  public UserDetails loadByUsername(String username) throws UsernameNotFoundException {
+      // 생략
+      List<GrantedAuthority> authorities =  null;
+      if (customer.size() == 0){
+          // 생략
+      } else {
+          authorities = new ArrayList<>();
+          authorities.add(new SingleGrantedAuthrority(customer.get(0).getRole()));
+      }
+      return new User(username, password, authorities);
+  }
+  ```
+
+  - User 객체를 생성할 때 권한 정보를 `SimpleGrantedAuthority` 객체를 만들어 넣음
+
 - 어떠한 구조를 사용하더라도 `SimpleGrantedAuthority`를 이용하게 됨
 
 ## Spring Security에서의 권한 부여
 
 - 각 유저에게 제한되지 않은 수의 권한 또는 역할 부여 가능 (유연성 제공) \
-  -> `Authorities`라는 새로운 테이블 형성 후 유저가 가질 수 있는 권한 종류 정의 가능 - 고객 테이블과 외래키 연결을 통해 연결 가능
-
-```Java
-// EazyBankAuthenticationProvider.authenticate()
-private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for (Authority authority : authorities) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
-        }
-        return grantedAuthorities;
-    }
-```
-
-- 유저에게 할당된 모든 `authority`들을 `set`으로 불러 `SimpleGrantedAuthrity`들을 만들고 리스트에 추가
+  -> `Authorities`라는 새로운 테이블 형성 후 유저가 가질 수 있는 권한 종류 정의 가능
+  - 고객 테이블과 외래키 연결을 통해 연결 가능
 
 ## Spring Security에서 권한 부여를 실행하는 방법
 
