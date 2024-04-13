@@ -22,7 +22,7 @@ KeyCloak, Okta, ForgeRock, Amazon Cognito이 그 예시이다.
 이 과정에서 client credentials grant type flow를 사용한다.  
 ![img_26.png](image/img_26.png)
 
-**클라이언트 생성하기**
+**클라이언트 생성하기**  
 ![img_27.png](image/img_27.png)
 ![img_28.png](image/img_28.png)
 ![img_29.png](image/img_29.png)  
@@ -75,7 +75,7 @@ public class ProjectSecurityConfig {
 }
 ```
 
-3. 모든 Filter를 삭제한다.
+3. 모든 Filter를 삭제한다.  
 ![img_31.png](image/img_31.png)
 
 4. EazyBankUsernamePasswordAuthenticationProvider.java 삭제하기
